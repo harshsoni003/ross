@@ -5,10 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  // Ensure trailing slashes are handled correctly
-  trailingSlash: false,
-  // Ensure proper asset handling
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/' : '',
+  // Simplify configuration
+  distDir: '.next'
 };
 
 export default nextConfig;
