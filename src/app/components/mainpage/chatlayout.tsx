@@ -78,7 +78,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
       setIsTyping(false);
       setIsError(false);
     }
-  }, [resetKey, userName]);
+  }, [resetKey, conversation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

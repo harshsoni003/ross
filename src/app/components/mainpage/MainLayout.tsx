@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../sidebarpage/Sidebar';
 import ChatLayout from './chatlayout';
 
@@ -17,15 +17,6 @@ export default function MainLayout() {
   
   const handleResetConversation = () => {
     setResetConversation(prev => prev + 1);
-  };
-
-  // Handle webhook URL update
-  const handleWebhookUrlUpdate = (url: string) => {
-    const trimmedUrl = url.trim();
-    setWebhookUrl(trimmedUrl);
-    
-    // Optional: Add additional validation or processing here
-    console.log('Webhook URL updated:', trimmedUrl ? 'URL set' : 'URL cleared');
   };
 
   return (
