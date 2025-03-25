@@ -2,6 +2,10 @@ import MainLayout from './components/mainpage/MainLayout';
 
 export default function Home() {
   return (
-    <MainLayout />
+    <main>
+      <MainLayout />
+    </main>
   );
 }
+
+export const dynamic = 'force-dynamic';
