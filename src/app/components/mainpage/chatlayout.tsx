@@ -136,13 +136,13 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
 
   return (
     <div className="flex flex-col h-screen bg-gray-900">
-      <motion.header 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800"
-      >
-        <div className="flex items-center">
+      <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center"
+        >
           <motion.span 
             className="text-blue-400 text-2xl mr-3"
             animate={{ rotate: [0, 15, 0] }}
@@ -153,8 +153,8 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
             </svg>
           </motion.span>
           <h1 className="text-2xl font-bold text-white">Agents</h1>
-        </div>
-      </motion.header>
+        </motion.div>
+      </div>
 
       <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative">
         {/* Webhook update notification */}
