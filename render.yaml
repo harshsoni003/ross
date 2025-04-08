@@ -3,10 +3,12 @@ services:
     name: travel-planner-ai
     env: node
     buildCommand: bash ./render-build.sh
-    startCommand: npm start
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3000
       - key: NEXT_PUBLIC_N8N_WEBHOOK_URL
         sync: false
       - key: NEXT_PUBLIC_SUPABASE_URL

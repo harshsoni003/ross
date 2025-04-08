@@ -25,7 +25,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body>
+      <body className="bg-gray-900 text-white">
         {children}
       </body>
     </html>
