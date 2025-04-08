@@ -11,7 +11,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Simplify configuration
+  // Remove the output: 'standalone' setting as it's not needed for Vercel
+  // and can cause issues with serverless deployment
 };
 
 module.exports = nextConfig; 
