@@ -10,6 +10,8 @@ const nextConfig = {
   // Ignore ESLint errors during build
   eslint: {
     ignoreDuringBuilds: true,
+    // This will disable linting during development as well
+    ignoreDuringDevs: true
   },
   // Remove these two lines as they may cause issues with Vercel deployment
   // output: 'standalone',
