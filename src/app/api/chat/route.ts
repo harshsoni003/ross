@@ -58,6 +58,12 @@ export async function POST(request: Request) {
       resultContent = String(data);
     }
 
+    // Clean up and format the content
+    resultContent = cleanupContent(resultContent);
+    
+    // Apply markdown-like formatting for better display
+    resultContent = formatContent(resultContent);
+
     return NextResponse.json({ response: resultContent });
   } catch (error) {
     console.error('Error processing message:', error);
@@ -88,4 +94,27 @@ function cleanupContent(content: string): string {
     .replace(/\\r/g, '')         // Remove carriage returns
     .replace(/^"|"$/g, '')       // Remove surrounding quotes
     .replace(/\\\\([^\\])/g, '\\$1'); // Fix double escaped characters
+}
+
+/**
+ * Format content with basic markdown-like styling
+ */
+function formatContent(content: string): string {
+  // Format event details with better structure
+  if (content.includes('has been successfully')) {
+    // Add bold formatting to key parts
+    content = content
+      .replace(/(The event ".*?" has been successfully)/, '**$1**')
+      .replace(/(\*\*Summary\*\*:)/, '\n\n**Summary**:')
+      .replace(/(\*\*Description\*\*:)/, '\n**Description**:')
+      .replace(/(\*\*Date and Time\*\*:)/, '\n**Date and Time**:')
+      .replace(/(\*\*Attendees\*\*:)/, '\n**Attendees**:')
+      .replace(/(\*\*Google Meet Link\*\*:)/, '\n**Google Meet Link**:')
+      .replace(/(\*\*Phone Access\*\*:)/, '\n**Phone Access**:')
+      .replace(/(You can view or edit the event)/, '\n\n$1');
+  }
+  
+  // Add more formatting rules for other types of responses
+  
+  return content;
 } 

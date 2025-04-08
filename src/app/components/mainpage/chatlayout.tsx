@@ -148,11 +148,12 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
             animate={{ rotate: [0, 15, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
           >
-            
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
           </motion.span>
-          <h1 className="text-2xl font-bold text-white">{userName} Agents</h1>
+          <h1 className="text-2xl font-bold text-white">Agents</h1>
         </div>
-        
       </motion.header>
 
       <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative">
@@ -176,7 +177,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <p className="text-gray-400 italic">
+          <p className="text-gray-400 italic text-center font-medium">
             Ask me about anything!
           </p>
         </motion.div>
@@ -191,7 +192,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
               className={`mb-4 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div 
-                className={`p-3 rounded-lg max-w-3xl ${
+                className={`p-3 rounded-lg max-w-3xl shadow-md ${
                   msg.sender === 'user' 
                     ? 'bg-blue-600 text-white rounded-tr-none' 
                     : isError && index === conversation.length - 1
@@ -199,7 +200,9 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
                     : 'bg-gray-800 text-white rounded-tl-none'
                 }`}
               >
-                {msg.text}
+                <div className="whitespace-pre-wrap">
+                  {msg.text}
+                </div>
               </div>
             </motion.div>
           ))}
@@ -211,7 +214,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
               exit={{ opacity: 0 }}
               className="flex justify-start mb-4"
             >
-              <div className="bg-gray-800 text-white p-3 rounded-lg rounded-tl-none flex space-x-1">
+              <div className="bg-gray-800 text-white p-3 rounded-lg rounded-tl-none flex space-x-1 shadow-md">
                 <motion.span
                   animate={{ y: [0, -5, 0] }}
                   transition={{ duration: 0.5, repeat: Infinity, repeatType: "loop", times: [0, 0.5, 1] }}
