@@ -4,13 +4,15 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### Environment Setup (Required)
 
-This application requires environment variables to work properly. For security reasons, the webhook URL is not hardcoded in the application:
+This application requires environment variables to work properly. For security reasons, sensitive information is not hardcoded in the application:
 
 1. Create a `.env` file in the root directory based on `.env.example`
-2. Add your n8n webhook URL:
+2. Add your n8n webhook URL and Supabase configuration:
 
 ```
 NEXT_PUBLIC_N8N_WEBHOOK_URL=your_n8n_webhook_url_here
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 ```
 
 **Important security note:** 
