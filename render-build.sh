@@ -10,6 +10,9 @@ npm install
 # Fix potential npm vulnerabilities (non-breaking)
 npm audit fix --production
 
+# Install SWC dependencies that might be missing
+npm install @swc/core @swc/helpers
+
 # Build the Next.js application with increased memory allocation
 NODE_OPTIONS="--max_old_space_size=4096" npm run build
 
