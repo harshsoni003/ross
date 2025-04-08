@@ -153,13 +153,8 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
             </svg>
           </motion.span>
           <h1 className="text-2xl font-bold text-white">Agents</h1>
-<<<<<<< HEAD
-        </div>
-      </motion.header>
-=======
         </motion.div>
       </div>
->>>>>>> 178cff7c507bded3162b2e23de0d3c6e44006da6
 
       <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative z-0">
         {/* Webhook update notification */}
