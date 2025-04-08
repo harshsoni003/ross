@@ -6,7 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build --no-lint",
     "start": "next start",
-    "start-standalone": "node server.js",
+    "start-standalone": "cd .next/standalone && node server.js",
     "lint": "next lint"
   },
   "engines": {

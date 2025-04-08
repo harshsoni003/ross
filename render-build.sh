@@ -21,7 +21,22 @@ cp server.js .next/standalone/
 
 # Copy the public directory to the standalone output
 mkdir -p .next/standalone/public
-cp -r public/* .next/standalone/public/
+cp -r public/* .next/standalone/public/ 2>/dev/null || :
+
+# Copy the .next/static directory to the standalone output
+mkdir -p .next/standalone/.next/static
+cp -r .next/static/* .next/standalone/.next/static/ 2>/dev/null || :
+
+# Copy the entire .next directory to ensure all assets are available
+cp -r .next/* .next/standalone/.next/ 2>/dev/null || :
+
+# Create a simple startup script in the standalone directory
+cat > .next/standalone/start.sh << 'EOL'
+#!/bin/bash
+NODE_ENV=production node server.js
+EOL
+
+chmod +x .next/standalone/start.sh
 
 # Exit with success
 exit 0 

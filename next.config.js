@@ -4,15 +4,19 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  // Ensure public assets are copied to the standalone output
+  // Ensure all assets are copied to the standalone output
   experimental: {
     outputFileTracingRoot: process.cwd(),
     outputFileTracingIncludes: {
       '/**': ['./public/**/*']
     }
   },
-  // Remove distDir to use default
-  // distDir: '.next'
+  // Explicitly configure static assets
+  assetPrefix: '',
+  // Ensure CSS is properly processed
+  webpack: (config) => {
+    return config;
+  }
 };
 
 module.exports = nextConfig; 

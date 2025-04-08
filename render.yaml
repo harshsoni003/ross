@@ -3,7 +3,7 @@ services:
     name: travel-planner-ai
     env: node
     buildCommand: bash ./render-build.sh
-    startCommand: node server.js
+    startCommand: cd .next/standalone && bash start.sh
     envVars:
       - key: NODE_ENV
         value: production
