@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sendMessage } from '@/app/services/chatService';
+import { sendMessage } from '../../services/chatService';
 
 interface ChatLayoutProps {
   webhookUrl: string;
