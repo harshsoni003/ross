@@ -135,7 +135,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900">
+    <div className="flex flex-col h-screen bg-gray-900 w-full">
       <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -156,7 +156,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
         </motion.div>
       </div>
 
-      <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative">
+      <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative z-0">
         {/* Webhook update notification */}
         <AnimatePresence>
           {isWebhookUpdated && (

@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 "use client";
 
 import React, { useState } from 'react';
@@ -20,21 +21,23 @@ export default function MainLayout() {
   };
 
   return (
-    <div className="flex w-full h-screen bg-gray-900">
-      <Sidebar 
-        webhookUrl={webhookUrl} 
-        setWebhookUrl={setWebhookUrl}
-        userName={userName}
-        setUserName={setUserName}
-        onResetConversation={handleResetConversation}
-      />
-      <div className="flex-1">
-        <ChatLayout 
+    <React.Fragment>
+      <div className="flex w-full h-screen bg-gray-900">
+        <Sidebar 
           webhookUrl={webhookUrl} 
+          setWebhookUrl={setWebhookUrl}
           userName={userName}
-          resetKey={resetConversation}
+          setUserName={setUserName}
+          onResetConversation={handleResetConversation}
         />
+        <div className="flex-1">
+          <ChatLayout 
+            webhookUrl={webhookUrl} 
+            userName={userName}
+            resetKey={resetConversation}
+          />
+        </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 } 
