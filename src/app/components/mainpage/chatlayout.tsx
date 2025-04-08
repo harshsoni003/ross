@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sendMessage } from '@/app/services/chatService';
+import { sendMessage } from '../../services/chatService';
 
 interface ChatLayoutProps {
   webhookUrl: string;
@@ -135,16 +135,16 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900">
-      <motion.header 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800"
-      >
-        <div className="flex items-center">
+    <div className="flex flex-col h-screen bg-gray-900 w-full">
+      <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
           <motion.span 
-            className="text-blue-400 text-2xl mr-3"
+            style={{ color: '#60a5fa', fontSize: '1.5rem', marginRight: '0.75rem' }}
             animate={{ rotate: [0, 15, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
           >
@@ -153,10 +153,15 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
             </svg>
           </motion.span>
           <h1 className="text-2xl font-bold text-white">Agents</h1>
+<<<<<<< HEAD
         </div>
       </motion.header>
+=======
+        </motion.div>
+      </div>
+>>>>>>> 178cff7c507bded3162b2e23de0d3c6e44006da6
 
-      <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative">
+      <div className="flex-grow overflow-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 relative z-0">
         {/* Webhook update notification */}
         <AnimatePresence>
           {isWebhookUpdated && (
@@ -164,7 +169,17 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="absolute top-2 right-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg z-10"
+              style={{
+                position: 'absolute',
+                top: '0.5rem',
+                right: '0.5rem',
+                backgroundColor: '#059669',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.375rem',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                zIndex: 10
+              }}
             >
               Webhook URL updated successfully!
             </motion.div>
@@ -175,7 +190,7 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          style={{ marginBottom: '2rem' }}
         >
           <p className="text-gray-400 italic text-center font-medium">
             Ask me about anything!
@@ -189,7 +204,11 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className={`mb-4 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              style={{
+                marginBottom: '1rem',
+                display: 'flex',
+                justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start'
+              }}
             >
               <div 
                 className={`p-3 rounded-lg max-w-3xl shadow-md ${
@@ -212,7 +231,11 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex justify-start mb-4"
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                marginBottom: '1rem'
+              }}
             >
               <div className="bg-gray-800 text-white p-3 rounded-lg rounded-tl-none flex space-x-1 shadow-md">
                 <motion.span
@@ -237,7 +260,11 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="border-t border-gray-700 p-4 bg-gray-800"
+        style={{
+          borderTop: '1px solid #374151',
+          padding: '1rem',
+          backgroundColor: '#1f2937'
+        }}
       >
         <form onSubmit={handleSubmit} className="flex items-center">
           <input
@@ -248,19 +275,35 @@ export default function ChatLayout({ webhookUrl, userName, resetKey }: ChatLayou
             className="flex-grow bg-gray-700 rounded-l-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
             disabled={isTyping}
           />
-          <motion.button 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            type="submit" 
-            className={`p-3 rounded-r-md text-white transition-colors shadow-md ${
-              isTyping ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-            disabled={isTyping}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </motion.button>
+            <button
+              type="submit"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                if (isTyping) {
+                  e.preventDefault();
+                }
+              }}
+              style={{
+                padding: '0.75rem',
+                borderTopRightRadius: '0.375rem',
+                borderBottomRightRadius: '0.375rem',
+                color: 'white',
+                backgroundColor: isTyping ? '#4b5563' : '#2563eb',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                cursor: isTyping ? 'not-allowed' : 'pointer',
+                opacity: isTyping ? 0.7 : 1,
+                border: 'none',
+                outline: 'none'
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </motion.div>
         </form>
       </motion.div>
     </div>
