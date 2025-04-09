@@ -24,8 +24,9 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="stylesheet" href="/_next/static/css/app/layout.css" />
       </head>
-      <body className="bg-gray-900 text-white">
+      <body className="bg-gray-900 text-white" style={{backgroundColor: '#111827', color: '#ffffff'}}>
         {children}
       </body>
     </html>

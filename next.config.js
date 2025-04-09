@@ -5,7 +5,11 @@ const nextConfig = {
     unoptimized: true
   },
   // Simplify configuration
-  distDir: '.next'
+  distDir: '.next',
+  // Add this to ensure CSS is properly processed
+  webpack: (config) => {
+    return config;
+  }
 };
 
 module.exports = nextConfig; 

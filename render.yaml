@@ -1,14 +1,12 @@
 services:
   - type: web
-    name: travel-planner-ai
+    name: my-nextjs-app
     env: node
-    buildCommand: bash ./render-build.sh
-    startCommand: cd .next/standalone && bash start.sh
+    buildCommand: npm install -D tailwindcss@3.3.0 postcss@8.4.24 autoprefixer@10.4.14 && npm run build
+    startCommand: npm run start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 3000
       - key: NEXT_PUBLIC_N8N_WEBHOOK_URL
         sync: false
       - key: NEXT_PUBLIC_SUPABASE_URL
