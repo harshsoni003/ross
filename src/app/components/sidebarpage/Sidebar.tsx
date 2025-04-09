@@ -53,22 +53,6 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
           API Settings
         </h2>
         
-        {/* User Information Section */}
-        <div className="mb-6 bg-gray-800 p-4 rounded-lg shadow-md">
-          <h3 className="text-sm font-medium text-blue-400 mb-3 uppercase tracking-wider">Agent Information</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-300 mb-1">Agent Name</label>
-              <input
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Webhook Section */}
         <div className="mb-6 bg-gray-800 p-4 rounded-lg shadow-md">
           <div className="flex items-center justify-between mb-3">
@@ -156,6 +140,49 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                   <span className="text-gray-500">Webhook connects to n8n workflow for API processing</span>
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* New Container for Aigent name & webhook chat url */}
+        <div className="mb-6 bg-gray-800 p-4 rounded-lg shadow-md">
+          <h3 className="text-sm font-medium text-blue-400 mb-3 uppercase tracking-wider flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            AGENT CONFIGURATION
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Aigent Name</label>
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Enter agent name"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Webhook Chat URL</label>
+              <input
+                type="text"
+                className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Enter webhook chat URL"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                Optional: Separate URL for chat-specific webhook endpoints
+              </p>
+            </div>
+            <div className="pt-2">
+              <button 
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center transition-colors duration-300 shadow-md w-full"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Save Configuration
+              </button>
             </div>
           </div>
         </div>
