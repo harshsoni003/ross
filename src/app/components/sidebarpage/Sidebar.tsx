@@ -336,7 +336,15 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Agent Configuration Section */}
+=======
+<<<<<<< HEAD
+        {/* New Container for Aigent name & webhook chat url */}
+=======
+        {/* Agent Configuration Section */}
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
         <div className="mb-6 bg-gray-800 p-4 rounded-lg shadow-md">
           <h3 className="text-sm font-medium text-blue-400 mb-3 uppercase tracking-wider flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -346,11 +354,25 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
           </h3>
           <div className="space-y-4">
             <div>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+              <label className="block text-sm text-gray-300 mb-1">Aigent Name</label>
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+=======
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
               <label className="block text-sm text-gray-300 mb-1">Agent Name</label>
               <input
                 type="text"
                 value={agentName}
                 onChange={(e) => setAgentName(e.target.value)}
+<<<<<<< HEAD
+=======
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter agent name"
               />
@@ -359,8 +381,16 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
               <label className="block text-sm text-gray-300 mb-1">Webhook Chat URL</label>
               <input
                 type="text"
+<<<<<<< HEAD
                 value={chatUrl}
                 onChange={(e) => setChatUrl(e.target.value)}
+=======
+<<<<<<< HEAD
+=======
+                value={chatUrl}
+                onChange={(e) => setChatUrl(e.target.value)}
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter webhook chat URL"
               />
@@ -368,6 +398,19 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                 Optional: Separate URL for chat-specific webhook endpoints
               </p>
             </div>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            <div className="pt-2">
+              <button 
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center transition-colors duration-300 shadow-md w-full"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Save Configuration
+=======
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
             
             {/* Save message notification */}
             {saveMessage && (
@@ -397,10 +440,19 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                   </svg>
                 )}
                 Save Agent
+<<<<<<< HEAD
+=======
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
               </button>
             </div>
           </div>
         </div>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
         
         {/* Saved Agents List */}
         {agents.length > 0 && (
@@ -462,6 +514,10 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
             </div>
           </div>
         )}
+<<<<<<< HEAD
+=======
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
+>>>>>>> c10c0025080ed35600f0c59271e3b9f33476a123
       </div>
 
       <div className="p-5 border-t border-gray-700">
