@@ -7,6 +7,8 @@ export async function sendMessage(message: string, webhookUrl?: string): Promise
 
     // Trim the webhook URL to handle any whitespace
     const trimmedWebhookUrl = webhookUrl.trim();
+    
+    console.log('Sending message to API with webhook:', trimmedWebhookUrl.substring(0, 10) + '...');
 
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -18,6 +20,7 @@ export async function sendMessage(message: string, webhookUrl?: string): Promise
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('API response error:', errorData);
       throw new Error(errorData.error || `Error: ${response.status}`);
     }
 

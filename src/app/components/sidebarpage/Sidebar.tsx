@@ -1,6 +1,15 @@
 "use client";
 
 import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
+// Define the ChatAgent type
+interface ChatAgent {
+  id: string;
+  agent_name: string;
+  chat_url: string;
+  created_at: string;
+}
 
 interface SidebarProps {
   webhookUrl: string;
@@ -10,11 +19,101 @@ interface SidebarProps {
   onResetConversation: () => void;
 }
 
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserName, onResetConversation }: SidebarProps) {
   const [urlStatus, setUrlStatus] = useState<'env' | 'custom' | 'missing'>(
     process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL ? 'env' : 
     webhookUrl ? 'custom' : 'missing'
   );
+  
+  // Add state for agent name and chat URL
+  const [agentName, setAgentName] = useState('');
+  const [chatUrl, setChatUrl] = useState('');
+  const [agents, setAgents] = useState<ChatAgent[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
+  
+  // Add this state to track if the agent dropdown is open
+  const [isAgentDropdownOpen, setIsAgentDropdownOpen] = useState(false);
+  
+  // Fetch agents on component mount
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+  
+  // Function to fetch agents from Supabase
+  const fetchAgents = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('chat_agents')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      setAgents(data || []);
+    } catch (error) {
+      console.error('Error fetching agents:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Function to save agent to Supabase
+  const saveAgent = async () => {
+    if (!agentName.trim()) {
+      setSaveMessage({ type: 'error', text: 'Agent name is required' });
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('chat_agents')
+        .insert([
+          { agent_name: agentName.trim(), chat_url: chatUrl.trim() }
+        ])
+        .select();
+        
+      if (error) throw error;
+      
+      // Update local state
+      if (data) {
+        setAgents([...data, ...agents]);
+        setAgentName('');
+        setChatUrl('');
+        setSaveMessage({ type: 'success', text: 'Agent saved successfully!' });
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => setSaveMessage(null), 3000);
+      }
+    } catch (error) {
+      console.error('Error saving agent:', error);
+      setSaveMessage({ type: 'error', text: 'Failed to save agent' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Function to select an agent and apply its chat URL
+  const selectAgent = (agent: ChatAgent) => {
+    setSelectedAgentId(agent.id);
+    validateAndUpdateUrl(agent.chat_url);
+    
+    // Show a success message
+    setSaveMessage({ 
+      type: 'success', 
+      text: `Agent "${agent.agent_name}" selected!` 
+    });
+    
+    // Clear success message after 3 seconds
+    setTimeout(() => setSaveMessage(null), 3000);
+  };
   
   // Update URL status when webhook URL changes
   useEffect(() => {
@@ -43,6 +142,52 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
   // Check if the webhook URL is secure (starts with https:)
   const isSecureUrl = webhookUrl && webhookUrl.toLowerCase().startsWith('https:');
 
+  // Add this function to toggle the agent dropdown
+  const toggleAgentDropdown = () => {
+    setIsAgentDropdownOpen(!isAgentDropdownOpen);
+  };
+
+  // Function to delete an agent from Supabase
+  const deleteAgent = async (agentId: string) => {
+    try {
+      setIsLoading(true);
+      
+      // Delete the agent from Supabase
+      const { error } = await supabase
+        .from('chat_agents')
+        .delete()
+        .eq('id', agentId);
+        
+      if (error) throw error;
+      
+      // Update local state by removing the deleted agent
+      setAgents(agents.filter(agent => agent.id !== agentId));
+      
+      // If the deleted agent was selected, clear the selection
+      if (selectedAgentId === agentId) {
+        setSelectedAgentId(null);
+      }
+      
+      // Show success message
+      setSaveMessage({ 
+        type: 'success', 
+        text: 'Agent deleted successfully!' 
+      });
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSaveMessage(null), 3000);
+      
+    } catch (error) {
+      console.error('Error deleting agent:', error);
+      setSaveMessage({ 
+        type: 'error', 
+        text: 'Failed to delete agent' 
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-80 bg-gray-900 border-r border-gray-700 h-screen flex flex-col">
       <div className="p-6 overflow-y-auto flex-grow">
@@ -65,7 +210,7 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
             {isSecureUrl && (
               <div className="bg-green-700 text-white text-xs px-2 py-1 rounded flex items-center">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-1.5"></div>
-                CONNECTED
+                Active
               </div>
             )}
           </div>
@@ -73,7 +218,19 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm text-gray-300">Webhook Endpoint</label>
-                <span className="text-xs text-blue-400 font-medium">n8n API</span>
+                <div className="flex items-center">
+                  <span className="text-xs text-blue-400 font-medium mr-2">n8n API</span>
+                  {/* Toggle button for saved agents */}
+                  <button 
+                    onClick={toggleAgentDropdown}
+                    className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
+                    title="Show saved agents"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transform transition-transform duration-200 ${isAgentDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div className="relative">
                 <input
@@ -98,6 +255,41 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                   )}
                 </div>
               </div>
+              
+              {/* Dropdown for saved agents */}
+              {isAgentDropdownOpen && agents.length > 0 && (
+                <div className="mt-2 bg-gray-700 rounded-md border border-gray-600 shadow-lg overflow-hidden">
+                  <div className="p-2 border-b border-gray-600 bg-gray-800">
+                    <h4 className="text-xs font-medium text-gray-300">Select an agent endpoint</h4>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto">
+                    {agents.map((agent) => (
+                      <div 
+                        key={agent.id}
+                        className={`p-2 hover:bg-gray-600 cursor-pointer ${
+                          selectedAgentId === agent.id ? 'bg-gray-600' : ''
+                        }`}
+                        onClick={() => {
+                          selectAgent(agent);
+                          setIsAgentDropdownOpen(false);
+                        }}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-white">{agent.agent_name}</span>
+                          {selectedAgentId === agent.id && (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                        {agent.chat_url && (
+                          <p className="text-xs text-gray-400 truncate">{agent.chat_url}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               <div className="mt-2 flex items-center">
                 {urlStatus === 'env' && (
@@ -144,7 +336,11 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* New Container for Aigent name & webhook chat url */}
+=======
+        {/* Agent Configuration Section */}
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
         <div className="mb-6 bg-gray-800 p-4 rounded-lg shadow-md">
           <h3 className="text-sm font-medium text-blue-400 mb-3 uppercase tracking-wider flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,11 +350,19 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
           </h3>
           <div className="space-y-4">
             <div>
+<<<<<<< HEAD
               <label className="block text-sm text-gray-300 mb-1">Aigent Name</label>
               <input
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+=======
+              <label className="block text-sm text-gray-300 mb-1">Agent Name</label>
+              <input
+                type="text"
+                value={agentName}
+                onChange={(e) => setAgentName(e.target.value)}
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter agent name"
               />
@@ -167,6 +371,11 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
               <label className="block text-sm text-gray-300 mb-1">Webhook Chat URL</label>
               <input
                 type="text"
+<<<<<<< HEAD
+=======
+                value={chatUrl}
+                onChange={(e) => setChatUrl(e.target.value)}
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter webhook chat URL"
               />
@@ -174,6 +383,7 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                 Optional: Separate URL for chat-specific webhook endpoints
               </p>
             </div>
+<<<<<<< HEAD
             <div className="pt-2">
               <button 
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center transition-colors duration-300 shadow-md w-full"
@@ -182,10 +392,105 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Save Configuration
+=======
+            
+            {/* Save message notification */}
+            {saveMessage && (
+              <div className={`text-sm px-3 py-2 rounded ${
+                saveMessage.type === 'success' ? 'bg-green-800 text-green-100' : 'bg-red-800 text-red-100'
+              }`}>
+                {saveMessage.text}
+              </div>
+            )}
+            
+            <div className="pt-2">
+              <button 
+                onClick={saveAgent}
+                disabled={isLoading}
+                className={`bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center transition-colors duration-300 shadow-md w-full ${
+                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoading ? (
+                  <svg className="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+                Save Agent
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
               </button>
             </div>
           </div>
         </div>
+<<<<<<< HEAD
+=======
+        
+        {/* Saved Agents List */}
+        {agents.length > 0 && (
+          <div className="mb-6 bg-gray-800 p-4 rounded-lg shadow-md">
+            <h3 className="text-sm font-medium text-blue-400 mb-3 uppercase tracking-wider flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              SAVED AGENTS
+            </h3>
+            <div className="space-y-2 mt-2">
+              {agents.map((agent) => (
+                <div 
+                  key={agent.id} 
+                  className={`bg-gray-700 p-3 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-600 ${
+                    selectedAgentId === agent.id ? 'border-2 border-blue-500' : ''
+                  }`}
+                  onClick={() => selectAgent(agent)}
+                >
+                  <div className="flex justify-between items-center">
+                    <h4 className="text-white font-medium">{agent.agent_name}</h4>
+                    <div className="flex items-center">
+                      {selectedAgentId === agent.id && (
+                        <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-full mr-2">Active</span>
+                      )}
+                      <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">Agent</span>
+                    </div>
+                  </div>
+                  {agent.chat_url && (
+                    <p className="text-xs text-gray-300 mt-1 truncate">
+                      URL: {agent.chat_url}
+                    </p>
+                  )}
+                  <div className="mt-2 flex justify-between">
+                    <button 
+                      className="text-xs text-red-400 hover:text-red-300 transition-colors duration-200 flex items-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteAgent(agent.id);
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                    <button 
+                      className="text-xs text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        selectAgent(agent);
+                      }}
+                    >
+                      Use this endpoint
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+>>>>>>> 264cfefc2b02737600c8d1c2aa58b57215ed4160
       </div>
 
       <div className="p-5 border-t border-gray-700">
