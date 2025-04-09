@@ -364,9 +364,7 @@ export default function Sidebar({ webhookUrl, setWebhookUrl, userName, setUserNa
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter webhook chat URL"
               />
-              <p className="text-xs text-gray-400 mt-1">
-                Optional: Separate URL for chat-specific webhook endpoints
-              </p>
+      
             </div>
             
             {/* Save message notification */}
