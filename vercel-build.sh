@@ -7,6 +7,9 @@ npm install
 # Ensure PostCSS and Tailwind are properly installed
 npm install -D tailwindcss postcss autoprefixer
 
+# Install SWC dependencies to fix the warning
+npm install -D @swc/core @swc/helpers
+
 # Run Next.js build with ESLint disabled
 NODE_OPTIONS="--max_old_space_size=4096" next build --no-lint
 
