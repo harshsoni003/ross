@@ -11,7 +11,8 @@ module.exports = {
         // Add any custom colors here
       },
       fontFamily: {
-        // Add any custom fonts here
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        geist: ['var(--font-geist)', 'system-ui', 'sans-serif'],
       },
     },
   },
